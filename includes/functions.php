@@ -51,75 +51,48 @@ function getCategoryName($category_id) {
 
 // Get product image URL - PERBAIKAN UTAMA
 function getProductImage($image) {
-    // Default image jika tidak ada
-    $default_image = 'default-product.jpg';
-    
-    // Jika $image kosong, return default
+    $default_image = SITE_URL . 'assets/img/default-product.jpg';
+
+    // Jika kosong langsung pakai default
     if (empty($image) || trim($image) === '') {
-        $image = $default_image;
+        return $default_image;
     }
-    
+
     $image = trim($image);
-    
-    // DEBUG: Uncomment untuk troubleshooting
-    // error_log("DEBUG getProductImage: Looking for image: " . $image);
-    
-    // Base path untuk assets
-    $base_url = SITE_URL;
-    
-    // Cek apakah sudah URL lengkap
+
+    // Jika sudah berupa URL penuh
     if (filter_var($image, FILTER_VALIDATE_URL)) {
         return $image;
     }
-    
-    // Hapus karakter tidak perlu dari nama file
-    $image = basename($image); // Hanya ambil nama file
-    
-    // Array path yang akan dicoba (URUTAN PENTING!)
-    $possible_paths = [
-        // 1. Path utama dengan SITE_URL
-        $base_url . 'assets/img/' . $image,
-        
-        // 2. Path alternatif jika SITE_URL tidak lengkap
-        'http://' . $_SERVER['HTTP_HOST'] . '/restaurant-aurelian/assets/img/' . $image,
-        'http://' . $_SERVER['HTTP_HOST'] . '/assets/img/' . $image,
-        
-        // 3. Path relatif dari root
-        '/restaurant-aurelian/assets/img/' . $image,
-        '/assets/img/' . $image,
-        
-        // 4. Path relatif dari current directory
-        'assets/img/' . $image,
-        '../assets/img/' . $image,
-        '../../assets/img/' . $image,
+
+    // Ambil nama file saja
+    $filename = basename($image);
+
+    // Lokasi lokal yang dicek dulu supaya tidak kembali URL yang salah
+    $locations = [
+        [
+            'path' => realpath(__DIR__ . '/../assets/img/' . $filename),
+            'url'  => SITE_URL . 'assets/img/' . $filename,
+        ],
+        [
+            'path' => realpath(__DIR__ . '/../assets/uploads/products/' . $filename),
+            'url'  => SITE_URL . 'assets/uploads/products/' . $filename,
+        ],
     ];
-    
-    // Coba setiap path
-    foreach ($possible_paths as $path) {
-        // Untuk debugging
-        // error_log("DEBUG: Trying path: " . $path);
-        
-        // Cek jika path adalah URL/web
-        if (strpos($path, '://') !== false || strpos($path, '/') === 0) {
-            // Untuk URL, kita bisa langsung return path pertama
-            // karena browser akan menangani 404 jika file tidak ada
-            return $path;
-        }
-        
-        // Cek jika file ada di filesystem
-        $full_path = $_SERVER['DOCUMENT_ROOT'] . '/' . ltrim($path, '/');
-        if (file_exists($full_path)) {
-            // Convert ke URL web
-            $web_path = '/' . ltrim($path, '/');
-            if (strpos($web_path, 'restaurant-aurelian') === false) {
-                $web_path = '/restaurant-aurelian' . $web_path;
-            }
-            return 'http://' . $_SERVER['HTTP_HOST'] . $web_path;
+
+    foreach ($locations as $loc) {
+        if ($loc['path'] && file_exists($loc['path'])) {
+            return $loc['url'];
         }
     }
-    
-    // Jika semua gagal, return default image
-    return $base_url . 'assets/img/' . $default_image;
+
+    // Jika gagal, coba kembalikan URL relatif yang mungkin tersimpan di DB
+    if (strpos($image, 'assets/') === 0) {
+        return SITE_URL . ltrim($image, '/');
+    }
+
+    // Fallback terakhir: default
+    return $default_image;
 }
 
 // Fungsi bantu untuk debugging gambar

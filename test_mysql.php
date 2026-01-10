@@ -2,10 +2,10 @@
 // File: test_mysql.php
 // Letakkan di root folder (sama dengan index.php)
 
-echo "<h2>🛠️ Testing MySQL Connection - XAMPP Port 3307</h2>";
+echo "<h2>🛠️ Testing MySQL Connection - XAMPP Port 3306</h2>";
 
 $host = 'localhost';
-$port = '3307'; // PORT MYSQL XAMPP ANDA
+$port = '3306'; // PORT MYSQL XAMPP ANDA
 $dbname = 'restaurant_aurelian';
 $username = 'root';
 $password = '';
@@ -69,9 +69,9 @@ try {
     echo "<strong>💡 Solusi untuk XAMPP:</strong><br>";
     echo "1. Pastikan XAMPP Control Panel terbuka<br>";
     echo "2. Pastikan MySQL menunjukkan RUNNING (lampu hijau)<br>";
-    echo "3. Port harus <strong>3307</strong> sesuai XAMPP Anda<br>";
+    echo "3. Port harus <strong>3306</strong> sesuai XAMPP Anda<br>";
     echo "4. Buka XAMPP → MySQL → Config → my.ini<br>";
-    echo "5. Cari: <code>port = 3307</code><br>";
+    echo "5. Cari: <code>port = 3306</code><br>";
     echo "6. Restart MySQL<br>";
     echo "7. Buka phpMyAdmin di: http://localhost:8080/phpmyadmin<br>";
     echo "</div>";

@@ -5,28 +5,24 @@ ini_set('display_errors', 1);
 
 // Konfigurasi Database - SESUAI DENGAN XAMPP ANDA
 define('DB_HOST', 'localhost');  // atau '127.0.0.1'
-define('DB_PORT', '3307');       // PORT MYSQL DARI XAMPP: 3307
+define('DB_PORT', '3306');       // PORT MYSQL DARI XAMPP: 3306
 define('DB_USER', 'root');       // user default XAMPP
 define('DB_PASS', '');           // password default XAMPP (kosong)
 define('DB_NAME', 'restaurant_aurelian'); // pastikan database sudah dibuat
 
-// Konfigurasi Situs - PERBAIKAN PATH
-// Cek apakah sedang di localhost atau server
-if ($_SERVER['SERVER_NAME'] == 'localhost') {
-    // Jika di localhost dengan folder restaurant-aurelian
-    define('SITE_NAME', 'Aurelian Lounge');
-    define('SITE_URL', 'http://localhost/restaurant-aurelian/');
-    define('SITE_EMAIL', 'info@aurelianlounge.com');
-    define('ADMIN_EMAIL', 'admin@aurelianlounge.com');
-    
-    // Debug: Tampilkan info path
-    // echo "<!-- SITE_URL: " . SITE_URL . " -->\n";
-    // echo "<!-- Document Root: " . $_SERVER['DOCUMENT_ROOT'] . " -->\n";
-} else {
-    // Untuk server production
-    define('SITE_NAME', 'Aurelian Lounge');
-    define('SITE_URL', 'https://yourdomain.com/');
-    define('SITE_EMAIL', 'info@aurelianlounge.com');
-    define('ADMIN_EMAIL', 'admin@aurelianlounge.com');
-}
+// Konfigurasi Situs - hitung otomatis path dasar (mendukung folder dengan spasi)
+define('SITE_NAME', 'Aurelian Lounge');
+define('SITE_EMAIL', 'info@aurelianlounge.com');
+define('ADMIN_EMAIL', 'admin@aurelianlounge.com');
+
+$protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https://' : 'http://';
+$host = $_SERVER['HTTP_HOST'] ?? 'localhost';
+
+// Ambil path relatif project terhadap document root, lalu URL-encode setiap segmen agar spasi tidak bermasalah
+$doc_root = str_replace('\\', '/', rtrim($_SERVER['DOCUMENT_ROOT'], '/'));
+$project_root = str_replace('\\', '/', realpath(__DIR__ . '/..'));
+$relative_path = trim(str_replace($doc_root, '', $project_root), '/');
+$encoded_path = $relative_path !== '' ? implode('/', array_map('rawurlencode', explode('/', $relative_path))) . '/' : '';
+
+define('SITE_URL', $protocol . $host . '/' . $encoded_path);
 ?>

@@ -49,16 +49,16 @@ class Database {
             echo "❌ <strong>Database Connection Error:</strong><br>";
             echo "<strong>Pesan Error:</strong> " . $this->error . "<br>";
             echo "<strong>Host:</strong> " . $this->host . "<br>";
-            echo "<strong>Port:</strong> " . $this->port . " (harusnya 3307 sesuai XAMPP)<br>";
+            echo "<strong>Port:</strong> " . $this->port . " (harusnya 3306 sesuai XAMPP)<br>";
             echo "<strong>Database:</strong> " . $this->dbname . "<br>";
             echo "<strong>User:</strong> " . $this->user . "<br>";
             echo "<strong>DSN yang digunakan:</strong> " . $dsn . "<br>";
             
             echo "<br><strong>🔧 Solusi:</strong><br>";
             echo "1. Pastikan MySQL di XAMPP sudah RUNNING (lihat lampu hijau)<br>";
-            echo "2. Pastikan port MySQL di XAMPP adalah <strong>3307</strong><br>";
+            echo "2. Pastikan port MySQL di XAMPP adalah <strong>3306</strong><br>";
             echo "3. Buka XAMPP Control Panel → MySQL → Config → my.ini<br>";
-            echo "4. Cari line: <code>port = 3307</code><br>";
+            echo "4. Cari line: <code>port = 3306</code><br>";
             echo "5. Restart MySQL di XAMPP<br>";
             echo "6. Pastikan database '" . $this->dbname . "' sudah dibuat di phpMyAdmin<br>";
             echo "</div>";
